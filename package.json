@@ -16,6 +16,7 @@
     "serve-favicon": "~2.4.5"
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "nodemon": "^1.17.1"
   }
 }
