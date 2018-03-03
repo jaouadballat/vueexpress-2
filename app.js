@@ -10,7 +10,7 @@ const index = require('./routes/index');
 const products = require('./routes/products');
 const categories = require('./routes/categories');
 const seeder = require('./routes/seeder/products');
-const stripe = require("stripe")('sk_test_bSlBjwlbWBzNzmRUXsbhFaVY');
+const stripe = require("stripe")('PRIVT_KEY');
 
 const app = express();
 
