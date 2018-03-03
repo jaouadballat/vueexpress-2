@@ -5,10 +5,12 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const cors = require('cors');
 const index = require('./routes/index');
-const users = require('./routes/users');
+const products = require('./routes/products');
+const categories = require('./routes/categories');
 const seeder = require('./routes/seeder/products');
+const stripe = require("stripe")("sk_test_bSlBjwlbWBzNzmRUXsbhFaVY");
 
 const app = express();
 
@@ -34,17 +36,35 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
 
 app.use('/', index);
-app.use('/users', users);
+app.use('/products', products);
+app.use('/categories', categories);
 app.use('/seeder', seeder);
+app.post("/charge", (req, res, next) => {
+  let amount = req.body.total*100;
 
+  stripe.customers.create({
+    email: req.body.stripeEmail,
+    source: req.body.stripeToken.id
+  })
+    .then(customer =>
+      stripe.charges.create({
+        amount,
+        description: "Ecommerce Shopping Cart",
+        currency: "usd",
+        customer: customer.id
+      }))
+    .then(charge => res.json(charge));
+});
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {

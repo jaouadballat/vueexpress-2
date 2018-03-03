@@ -4,30 +4,27 @@ const faker = require('faker');
 const Product = require('../../models/Product');
 const Category = require('../../models/Category');
 
-router.get('/products', function (req, res, next) {
+router.get('/', function (req, res, next) {
+    const categories = ["Baby", "Movies", "Shoes", "Books", "Electronics","Computers", "Kids"];
     for (let i = 0; i < 20; i++) {
         let product = new Product({
             name : faker.commerce.productName(),
             price : faker.commerce.price(),
-            category: faker.commerce.department(),
+            category: categories[Math.floor(Math.random() * categories.length)],
             description : faker.lorem.paragraph(),
-            image : faker.image.technics()
+            image: "https://images-na.ssl-images-amazon.com/images/I/4196ru-rkjL.jpg"
         });
         
         product.save();
     }
-    res.redirect('/')
-});
-
-router.get('/category', function (req, res, next) {
-    for (let i = 0; i < 10; i++) {
-        let category = new Category({
-            title: faker.commerce.department(),
+    for (let i = 0; i < categories.length; i++) {
+        let cat = new Category({
+            title: categories[i]
         });
-
-        category.save();
+        cat.save();
     }
     res.redirect('/')
 });
+
 
 module.exports = router;
