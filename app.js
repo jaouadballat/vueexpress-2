@@ -10,7 +10,7 @@ const index = require('./routes/index');
 const products = require('./routes/products');
 const categories = require('./routes/categories');
 const seeder = require('./routes/seeder/products');
-const stripe = require("stripe")("sk_test_bSlBjwlbWBzNzmRUXsbhFaVY");
+const stripe = require("stripe")('sk_test_bSlBjwlbWBzNzmRUXsbhFaVY');
 
 const app = express();
 
@@ -46,8 +46,8 @@ app.post("/charge", (req, res, next) => {
   let amount = req.body.total*100;
 
   stripe.customers.create({
-    email: req.body.stripeEmail,
-    source: req.body.stripeToken.id
+    email: req.body.stripeToken.email,
+    source: req.body.stripeToken.id //source == stripeToken.id not just stripeToken
   })
     .then(customer =>
       stripe.charges.create({
@@ -56,7 +56,7 @@ app.post("/charge", (req, res, next) => {
         currency: "usd",
         customer: customer.id
       }))
-    .then(charge => res.json(charge));
+    .then(charge => res.json(req.body.stripeToken));
 });
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
